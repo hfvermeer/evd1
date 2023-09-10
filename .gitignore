@@ -1,2 +1,8 @@
 */build/*
 *.exe
+/exercise2_1/blue.bmp
+/exercise2_1/green.bmp
+/exercise2_1/red.bmp
+/exercise2_1/hue.bmp
+/exercise2_1/saturation.bmp
+/exercise2_1/value.bmp
