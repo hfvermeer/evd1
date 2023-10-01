@@ -1,5 +1,14 @@
+*
+!*.*
+!*/
+
 */build/*
+*/CMakeFiles/*
 *.exe
+*/Makefile
+*/CMakeCache.txt
+*/cmake_install.cmake
+
 /exercise2_1/blue.bmp
 /exercise2_1/green.bmp
 /exercise2_1/red.bmp

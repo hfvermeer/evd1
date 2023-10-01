@@ -22,15 +22,30 @@ Mat addGuassNoise(Mat image) {
     split(Gnoise, channels);
 
     // Add noise to each channel
-    randn(channels[0], 64, 30);
-    randn(channels[1], 64, 30);
-    randn(channels[2], 64, 30);
+    randn(channels[0], 128, 30);
+    randn(channels[1], 128, 30);
+    randn(channels[2], 128, 30);
 
     // Merge channels back into image
     merge(channels, 3, Gnoise);
-    Gresult = image + Gnoise;
+    Gresult = image + Gnoise - 128;
 
     return Gresult;
+}
+
+Mat addSaltPepperNoise(Mat image) {
+    // Create local structures
+    Mat SPnoise = Mat::zeros(image.rows, image.cols, CV_8U);
+    randu(SPnoise, 0, 255);
+
+    Mat salt = SPnoise > 225;
+    Mat pepper = SPnoise < 30;
+
+    Mat SPresult = image.clone();
+    SPresult.setTo(255, salt);
+    SPresult.setTo(0, pepper);
+
+    return SPresult;
 }
 
 int main( int argc, char** argv ) {
@@ -45,49 +60,40 @@ int main( int argc, char** argv ) {
     Mat Gnoise = addGuassNoise(image);
     imshow("Gaussian noise", Gnoise);
     
-    // Wait until user press some key
+    // Add some salt and pepper noise to snapshot and show in window
+    Mat SPnoise = addSaltPepperNoise(image);
+    imshow("Salt and pepper noise", SPnoise);
+
+    // Wait until user press some key, then close all windows
     waitKey(0);
- 
-    // Kill all windows and release camera
     destroyAllWindows();
 
-    // // Check if the image was loaded
+    // Show the original noisy barn image
+    Mat barn = imread("./barn_noisy.jpg", IMREAD_COLOR);
+    imshow("Original barn image", barn);
 
-    // if (!cap.isOpened()) { // Check if we succeeded
-    //     std::cerr << "Could not open capture" << std::endl;
-    //     return -1;
-    // }
+    // Blur the image with a 5x5 gaussian blur
+    Mat barn_blur;
+    cv::GaussianBlur(barn, barn_blur, Size(5, 5), 0, 0);
+    imshow("Barn image with 5x5 gaussian blur", barn_blur);
 
-    // // Create a window to display the captured image
-    // cv::namedWindow("Camera Image", cv::WINDOW_NORMAL);
+    // Blur the image with a Laplacian filter
+    Mat barn_laplace;
+    Mat barn_laplace_result;
+    cv::Laplacian(barn, barn_laplace, CV_8U, 3);
+    barn_laplace_result = barn - barn_laplace;
+    imshow("Barn image with Laplacian filter", barn_laplace_result);
 
-    // while (true) {
-    //     cv::Mat frame;
-    //     cap >> frame; // Capture a frame from the camera
+    // Blur the image with a median filter
+    Mat barn_median;
+    cv::medianBlur(barn, barn_median, 3);
+    imshow("Barn image with median filter", barn_median);
 
-    //     // Check if the frame was captured successfully
-    //     if (frame.empty()) {
-    //         std::cerr << "Error: Unable to capture a frame" << std::endl;
-    //         break;
-    //     }
-
-    //     // Add Gaussian noise to the frame
-    //     cv::Mat noisyImage;
-    //     cv::randn(noisyImage, cv::Scalar(0), cv::Scalar(25)); // Adjust the standard deviation for desired noise level
-    //     cv::add(frame, noisyImage, frame);
-
-    //     // Display the noisy image
-    //     cv::imshow("Camera Image", frame);
-
-    //     // Press 'q' to exit the loop
-    //     if (cv::waitKey(1) == 'q') {
-    //         break;
-    //     }
-    // }
-
-    // // Release the camera and close the window
-    // cap.release();
-    // cv::destroyAllWindows();
+    // Wait until user press some key, then close all windows
+    waitKey(0);
+    destroyAllWindows();
+   
+    // Add Guassian noise to barn image and show in window
 
     return 0;
 }
