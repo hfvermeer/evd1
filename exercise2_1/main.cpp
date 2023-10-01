@@ -6,7 +6,7 @@ int main(int, char**) {
     std::cout << "Exercise 2_1, OpenCV version: " << CV_VERSION << std::endl;
 
     // Use dark_flower.bmp in local folder
-    cv::Mat inputImage = cv::imread("./dark_flower.bmp", cv::IMREAD_COLOR);
+    cv::Mat inputImage = cv::imread("../dark_flower.bmp", cv::IMREAD_COLOR);
     
     std::vector<cv::Mat> channels;
     cv::split(inputImage, channels);

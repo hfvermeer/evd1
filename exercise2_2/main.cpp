@@ -69,7 +69,7 @@ int main( int argc, char** argv ) {
     destroyAllWindows();
 
     // Show the original noisy barn image
-    Mat barn = imread("./barn_noisy.jpg", IMREAD_COLOR);
+    Mat barn = imread("../barn_noisy.jpg", IMREAD_COLOR);
     imshow("Original barn image", barn);
 
     // Blur the image with a 5x5 gaussian blur
