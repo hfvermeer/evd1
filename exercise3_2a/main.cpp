@@ -5,7 +5,7 @@ using namespace cv;
 using namespace std;
 
 int main(int, char**) {
-    std::cout << "Exercise 3_2, OpenCV version: " << CV_VERSION << std::endl;
+    std::cout << "Exercise 3_2a, OpenCV version: " << CV_VERSION << std::endl;
 
     Mat src = imread("../ballbar.bmp",IMREAD_GRAYSCALE);
     if(!src.data) {
