@@ -33,20 +33,14 @@ int main(int, char**) {
     //     std::cout << "Could not open image!" << CV_VERSION << std::endl;
     // }
     // else {
-        Mat gray,bw,dst,guassian,tres;
+        Mat gray,bw,dst,guassian,tres,debug;
         vector<vector<Point> > contours;
         vector<Point> approx;
 
         VideoCapture capture(0);
 
-        namedWindow("Blurry", WINDOW_AUTOSIZE);
-        moveWindow("Blurry", 50, 150);
-
-        namedWindow("Threshold", WINDOW_AUTOSIZE);
-        moveWindow("Threshold", 50, 200);
-
-        namedWindow("Edges", WINDOW_AUTOSIZE);
-        moveWindow("Edges", 50, 50);
+        namedWindow("Debug", WINDOW_AUTOSIZE);
+        moveWindow("Debug", 50, 150);
 
         namedWindow("dst", WINDOW_AUTOSIZE);
         moveWindow("dst", 50, 100);
@@ -60,18 +54,29 @@ int main(int, char**) {
 
             // Use gaussian blur to remove noise
             GaussianBlur(gray, guassian, Size(5, 5), 0);
-            imshow("Blurry", guassian);
 
             // Use threshold to binarize the image
             threshold(guassian, tres, 100, 255, THRESH_BINARY);
-            imshow("Threshold", tres);
 
             // Use Canny instead of threshold to catch squares with gradient shading
             Canny(tres, bw, 80, 240, 3);
-            imshow("Edges", bw);
 
             // Find contours
             findContours(bw, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);        
+
+            // Copy guassian to debug and convert to color
+            guassian.copyTo(debug);
+            cvtColor(debug, debug, COLOR_GRAY2BGR);
+
+            // split debug into channels
+            vector<Mat> channels;
+            split(debug, channels);
+
+            // add canny edges to blue channel
+            channels[0] = channels[0] | bw;
+
+            // merge channels back into debug
+            merge(channels, debug);
 
             src.copyTo(dst);
             for (unsigned int i = 0; i < contours.size(); i++)  // Repeat the number of contours (.size)
@@ -84,15 +89,12 @@ int main(int, char**) {
                 if ((contourArea(contours[i])) < 100 || !isContourConvex(approx))
                     continue;
 
-                // Draw the in green contour on dst
-                drawContours(dst, contours, i, Scalar(0, 255, 0), 2);
+                // Draw the in green contour on debug
+                drawContours(debug, contours, i, Scalar(0, 255, 0), 1);
 
-                // Draw the approximated polygon in blue
-                drawContours(dst, vector<vector<Point> >{approx}, -1, Scalar(255, 0, 0), 2);
-
-                // Draw corner points in red
+                // Draw corner points in red on debug
                 for (unsigned int j = 0; j < approx.size(); j++)
-                    circle(dst, approx[j], 3, Scalar(0, 0, 255), -1);
+                    circle(debug, approx[j], 3, Scalar(0, 0, 255), -1);
 
                 // Label detected objects
                 if (approx.size() >= 3 && approx.size() <= 6) {
@@ -118,6 +120,7 @@ int main(int, char**) {
                         setLabel(dst, "CIRCLE", contours[i]);
                 }
             }
+            imshow("Debug", debug);
             imshow("dst", dst);
         }
         destroyAllWindows();
