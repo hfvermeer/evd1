@@ -14,9 +14,7 @@ int main(int, char**) {
     /* Check if path is correct */
     if( !Img.isOpened()) {
 
-        QMessageBox msgBox;
-        msgBox.setText("Could Not take a snapshot, probably no camera connected.");
-        msgBox.exec();
+        std::cout << "Could Not take a snapshot, probably no camera connected." << std::endl;
 
     } else {
 

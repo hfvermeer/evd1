@@ -35,9 +35,7 @@ int main(int, char**) {
     /* Create vector creating the blobs found by the detector */
     vector<KeyPoint> blobs;
     if( !capture.isOpened()) {
-        QMessageBox msgBox;
-        msgBox.setText("Het absolute path naar het bestand '../dices.mp4' is incorrect. Pas het path aan naar het juiste adres om de applicatie te starten.");
-        msgBox.exec();
+        std::cout << "Het absolute path naar het bestand '../dices.mp4' is incorrect. Pas het path aan naar het juiste adres om de applicatie te starten." << std::endl;
     }
     else {
     namedWindow("DiceRecognition", WINDOW_AUTOSIZE);
@@ -66,6 +64,11 @@ int main(int, char**) {
         /* Output screen in window */
         imshow("DiceRecognition", src);
     }
+
+    // Wait for a key press, then kill all windows
+    cv::waitKey(0);
+    cv::destroyAllWindows();
+
     /* Once the loop ended, delete windows and go back to normal state */
     destroyAllWindows();
 
