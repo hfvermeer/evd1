@@ -5,7 +5,7 @@ using namespace cv;
 using namespace std;
 
 int main(int, char**) {
-    std::cout << "Exercise 6_3a, OpenCV version: " << CV_VERSION << std::endl;
+    std::cout << "Exercise 6_3b, OpenCV version: " << CV_VERSION << std::endl;
 
     VideoCapture Img;
     Mat frame;
@@ -13,9 +13,8 @@ int main(int, char**) {
 
     /* Check if camera is present */
     if( !Img.isOpened()) {
-        QMessageBox msgBox;
-        msgBox.setText("Could Not take a snapshot, probably no camera connected.");
-        msgBox.exec();
+        std::cout << "Could Not take a snapshot, probably no camera connected." << std::endl;
+
     }
     else {
         /* Template image */
@@ -57,9 +56,7 @@ int main(int, char**) {
 
             /* Check if template is smaller than the video size. */
             if(result_cols < 0 || result_rows < 0) {
-                QMessageBox msgBox;
-                msgBox.setText("Formaat van het Template is te groot voor de video en zal nooit matchen.");
-                msgBox.exec();
+                std::cout << "Formaat van het Template is te groot voor de video en zal nooit matchen." << std::endl;
                 break;
             }
             //aMatch.create( result_rows, result_cols, CV_32FC1);
@@ -81,6 +78,11 @@ int main(int, char**) {
             /* Output! */
             imshow("Resultaat", frame);
         }
+
+        // Wait for a key press, then kill all windows
+        cv::waitKey(0);
+        cv::destroyAllWindows();
+
         /* Once the loop ended, delete windows and go back to normal state */
         destroyAllWindows();
     }
