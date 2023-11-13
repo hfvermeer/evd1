@@ -11,7 +11,7 @@ int main(int, char**) {
 
     src = imread("../Tekst.bmp",IMREAD_GRAYSCALE);
     if(!src.data) {
-        ui->statusBar->showMessage(QString("Could not open image!"),0);
+        std::cout << "Could not open image!" << CV_VERSION << std::endl;
     }
     else {
 
@@ -54,6 +54,10 @@ int main(int, char**) {
         moveWindow("Result", 650, 100);
 
     }
+
+    // Wait for a key press, then kill all windows
+    cv::waitKey(0);
+    cv::destroyAllWindows();
 
     std::cout << "Done!" << std::endl;
 
